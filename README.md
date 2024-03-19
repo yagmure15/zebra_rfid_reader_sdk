@@ -41,7 +41,7 @@ _zebraRfidReaderSdkPlugin.connect(
 ### Get Available Reader List 
 It returns a list of paired devices, resulting in a list of **ReaderDevice**.
 ```dart
-await _zebraRfidReaderSdkPlugin.getAvailableReaderList();
+_zebraRfidReaderSdkPlugin.getAvailableReaderList();
 ```
 
 
