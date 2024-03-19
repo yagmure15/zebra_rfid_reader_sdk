@@ -4,7 +4,7 @@ version: 0.0.1
 homepage: https://github.com/yagmure15/zebra_rfid_reader_sdk.git
 
 environment:
-  sdk: '>=2.19.2 <3.0.0'
+  sdk: '>=2.19.2 <4.0.0'
   flutter: ">=2.5.0"
 
 dependencies:
