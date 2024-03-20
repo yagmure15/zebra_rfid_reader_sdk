@@ -1,6 +1,6 @@
 name: zebra_rfid_reader_sdk
 description: Zebra RFID Reader SDK plugin for Flutter, providing seamless integration with Zebra RFID readers.
-version: 0.0.1
+version: 0.0.2
 homepage: https://github.com/yagmure15/zebra_rfid_reader_sdk.git
 
 environment:
