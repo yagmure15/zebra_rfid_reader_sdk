@@ -14,7 +14,8 @@ class ZebraRfidReaderSdk {
   ///
   /// Returns a [Future] that completes with `null` on successful connection, or throws an exception on failure.
   Future<void> connect(String name, {ReaderConfig? readerConfig}) {
-    return ZebraRfidReaderSdkPlatform.instance.connect(name, readerConfig ?? ReaderConfig.initial());
+    return ZebraRfidReaderSdkPlatform.instance
+        .connect(name, readerConfig ?? ReaderConfig.initial());
   }
 
   /// Disconnects from the currently connected Zebra RFID reader.

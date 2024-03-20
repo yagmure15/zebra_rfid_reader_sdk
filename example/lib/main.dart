@@ -105,30 +105,41 @@ class _MyAppState extends State<MyApp> {
               const Text('DEVICES'),
               Text(
                 'Handheld Readers (${availableReaderList.length})',
-                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               Expanded(
                 child: ListView.builder(
                   itemBuilder: (context, index) => Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4),
                     child: ListTile(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
                       selectedTileColor: Colors.orange[100],
                       tileColor: Colors.black12,
-                      onTap: () => connectedReader.connectionStatus == ConnectionStatus.connecting
+                      onTap: () => connectedReader.connectionStatus ==
+                              ConnectionStatus.connecting
                           ? null
-                          : connectedReader.name == availableReaderList[index].name &&
-                                  connectedReader.connectionStatus == ConnectionStatus.connected
+                          : connectedReader.name ==
+                                      availableReaderList[index].name &&
+                                  connectedReader.connectionStatus ==
+                                      ConnectionStatus.connected
                               ? disconnectToZebra()
-                              : connectToZebra(availableReaderList[index].name!),
+                              : connectToZebra(
+                                  availableReaderList[index].name!),
                       contentPadding: const EdgeInsets.all(8),
                       selectedColor: Colors.amber,
-                      title: Text(availableReaderList[index].name ?? "Unknown Device"),
-                      subtitle: connectedReader.name == availableReaderList.elementAt(index).name &&
-                              connectedReader.connectionStatus == ConnectionStatus.connected
-                          ? Text('Battery ${connectedReader.batteryLevel ?? '0'}%')
+                      title: Text(
+                          availableReaderList[index].name ?? "Unknown Device"),
+                      subtitle: connectedReader.name ==
+                                  availableReaderList.elementAt(index).name &&
+                              connectedReader.connectionStatus ==
+                                  ConnectionStatus.connected
+                          ? Text(
+                              'Battery ${connectedReader.batteryLevel ?? '0'}%')
                           : null,
-                      trailing: Text(connectedReader.name == availableReaderList.elementAt(index).name
+                      trailing: Text(connectedReader.name ==
+                              availableReaderList.elementAt(index).name
                           ? connectedReader.connectionStatus.name
                           : 'Not Connected'),
                     ),
@@ -147,7 +158,8 @@ class _MyAppState extends State<MyApp> {
                 },
               ),
               const SizedBox(height: 16),
-              Text('Beeper Volume: ${BeeperVolume.values[beeperVolume.toInt()].name.toUpperCase()}'),
+              Text(
+                  'Beeper Volume: ${BeeperVolume.values[beeperVolume.toInt()].name.toUpperCase()}'),
               SizedBox(
                 width: double.infinity,
                 child: CupertinoSlider(

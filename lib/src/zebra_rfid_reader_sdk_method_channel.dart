@@ -14,7 +14,9 @@ class MethodChannelZebraRfidReaderSdk extends ZebraRfidReaderSdkPlatform {
   /// Returns a list of available readers.
   @override
   Future<List<ReaderDevice>> getAvailableReaderList() async {
-    final result = await _methodChannel.invokeMethod<String>('getAvailableReaderList') ?? [];
+    final result =
+        await _methodChannel.invokeMethod<String>('getAvailableReaderList') ??
+            [];
     final json = jsonDecode(result.toString());
     List<ReaderDevice> readers = [];
 
@@ -28,7 +30,8 @@ class MethodChannelZebraRfidReaderSdk extends ZebraRfidReaderSdkPlatform {
   /// Connects to a reader with the given [name] and [readerConfig].
   @override
   Future<void> connect(String name, ReaderConfig readerConfig) async {
-    await _methodChannel.invokeMethod<String>('connect', {'name': name, 'readerConfig': readerConfig.toJson()});
+    await _methodChannel.invokeMethod<String>(
+        'connect', {'name': name, 'readerConfig': readerConfig.toJson()});
   }
 
   /// Disconnects from the reader.
@@ -40,19 +43,22 @@ class MethodChannelZebraRfidReaderSdk extends ZebraRfidReaderSdkPlatform {
   /// Sets the antenna power to the given [value].
   @override
   Future<void> setAntennaPower(int value) async {
-    await _methodChannel.invokeMethod<void>('setAntennaPower', {'transmitPowerIndex': value});
+    await _methodChannel
+        .invokeMethod<void>('setAntennaPower', {'transmitPowerIndex': value});
   }
 
   /// Sets the beeper volume to the given [value].
   @override
   Future<void> setBeeperVolume(int value) async {
-    await _methodChannel.invokeMethod<void>('setBeeperVolume', {'level': value});
+    await _methodChannel
+        .invokeMethod<void>('setBeeperVolume', {'level': value});
   }
 
   /// Sets the dynamic power to the given [value].
   @override
   Future<void> setDynamicPower(bool value) async {
-    await _methodChannel.invokeMethod<void>('setDynamicPower', {'isEnable': value});
+    await _methodChannel
+        .invokeMethod<void>('setDynamicPower', {'isEnable': value});
   }
 
   /// Returns a stream of connected reader devices.

@@ -12,7 +12,8 @@ abstract class ZebraRfidReaderSdkPlatform extends PlatformInterface {
   ZebraRfidReaderSdkPlatform() : super(token: _token);
 
   static final Object _token = Object();
-  static ZebraRfidReaderSdkPlatform _instance = MethodChannelZebraRfidReaderSdk();
+  static ZebraRfidReaderSdkPlatform _instance =
+      MethodChannelZebraRfidReaderSdk();
 
   /// Singleton instance of the `ZebraRfidReaderSdkPlatform`.
   static ZebraRfidReaderSdkPlatform get instance => _instance;
@@ -45,7 +46,8 @@ abstract class ZebraRfidReaderSdkPlatform extends PlatformInterface {
   ///
   /// @throws [NotImplementedError] if the platform-specific implementation has not implemented this method.
   Future<List<ReaderDevice>> getAvailableReaderList() {
-    throw UnimplementedError('getAvailableReaderList() has not been implemented.');
+    throw UnimplementedError(
+        'getAvailableReaderList() has not been implemented.');
   }
 
   /// Sets the antenna power level for the connected Zebra RFID reader.

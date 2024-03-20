@@ -1,4 +1,4 @@
-enum ConnectionStatus { connected, connecting, notConnected, failed}
+enum ConnectionStatus { connected, connecting, notConnected, failed }
 
 class ReaderDevice {
   final ConnectionStatus connectionStatus;
@@ -14,7 +14,9 @@ class ReaderDevice {
   factory ReaderDevice.fromJson(Map<Object?, Object?> json) {
     return ReaderDevice(
       connectionStatus: ConnectionStatus.values.firstWhere(
-          (e) => e.name.toLowerCase() == '${json['connectionStatus']}'.toString().toLowerCase(),
+          (e) =>
+              e.name.toLowerCase() ==
+              '${json['connectionStatus']}'.toString().toLowerCase(),
           orElse: () => ConnectionStatus.notConnected),
       name: json['name'] as String?,
       batteryLevel: json['batteryLevel'] as String?,
