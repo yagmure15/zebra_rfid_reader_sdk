@@ -22,7 +22,17 @@ final _zebraRfidReaderSdkPlugin = ZebraRfidReaderSdk();
 ### Connection
 The 'connect' function has two parameters. The 'tagName' parameter specifies the name of the device to be connected to. The 'readerConfig' parameter is optional and is used to set antenna, sound, and dynamic power data.
 
-*Note: Antenna power value should be between **120** and **300**.*
+*Note 1: Antenna power value should be between **120** and **300**.*
+
+*Note 2: Please check Bluetooth scan and connection permissions before calling the connection function.*
+
+
+```dart
+  Future<void> requestAccess() async {
+    await Permission.bluetoothScan.request().isGranted;
+    await Permission.bluetoothConnect.request().isGranted;
+  }
+```
 
 ```dart
 _zebraRfidReaderSdkPlugin.connect(
@@ -62,3 +72,15 @@ This function is used to configure the dynamic power settings for the Zebra RFID
 ```dart
 _zebraRfidReaderSdkPlugin.setDynamicPower(value);
 ```
+
+### Listening Event
+```dart
+_zebraRfidReaderSdkPlugin.connectedReaderDevice.listen((event) {
+      final result = jsonDecode(event.toString());
+      log(result.toString());
+    });
+```
+
+
+
+
