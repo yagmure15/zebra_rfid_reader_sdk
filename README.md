@@ -4,8 +4,59 @@ Zebra RFID Reader SDK plugin for Flutter.
 
 <img src="https://github.com/yagmure15/zebra_rfid_reader_sdk/raw/main/site/zebra_rfd8500.png" alt="Zebra RFID Reader SDK Logo" width="300">
 
+## Android Setup 🔧 
 
- 
+### Add RFIDAPI3Library Folder
+
+After downloading [this](https://github.com/yagmure15/rfidapi3library/tree/main) file, copy it to the `android` directory.
+
+### Gradle Setup
+
+You must add the following code to `android/settings.gradle`.
+```dart
+include ':RFIDAPI3Library'
+```
+
+You should add the following code to the dependencies section under the directory `android/app/build.gradle`.
+```dart
+dependencies {
+    implementation project(":RFIDAPI3Library")
+}
+```
+
+### Manifest Setup
+You should add below inside the **manifest** tag
+```dart
+xmlns:tools="http://schemas.android.com/tools"
+```
+
+and  inside the **application** tag 
+ ```dart
+ tools:replace="android:label"
+```
+within the `android/app/src/main/AndroidManifest.xml` directory.
+
+The manifest file will look like this:
+```dart
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    ...
+   <application
+       ...
+       tools:replace="android:label">
+       ...
+    </application>
+</manifest>
+```
+### Be Sure minSdkVersion 19 or Higher
+```dart
+defaultConfig {
+   minSdkVersion 19
+}    
+```
+## IOS Setup 🔧 
+Coming Soon
+
 ## Features
 - Ability to connect to paired Zebra RFID reader.
 - Ability to configure antenna power, beeper volume, and dynamic power.
