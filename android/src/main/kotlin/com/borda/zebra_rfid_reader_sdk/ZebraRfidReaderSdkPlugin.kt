@@ -75,8 +75,7 @@ class ZebraRfidReaderSdkPlugin : FlutterPlugin, MethodCallHandler {
             }
 
             "findTheTag" -> {
-                // val tag = call.argument<String>("tag")!!
-                val tag = "BDBD0134000000000013B745"
+                val tag = call.argument<String>("tag")!!
                 connectionHelper.findTheTag(tag)
             }
 
