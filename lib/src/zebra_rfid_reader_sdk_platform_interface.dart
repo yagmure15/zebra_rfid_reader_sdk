@@ -12,8 +12,7 @@ abstract class ZebraRfidReaderSdkPlatform extends PlatformInterface {
   ZebraRfidReaderSdkPlatform() : super(token: _token);
 
   static final Object _token = Object();
-  static ZebraRfidReaderSdkPlatform _instance =
-      MethodChannelZebraRfidReaderSdk();
+  static ZebraRfidReaderSdkPlatform _instance = MethodChannelZebraRfidReaderSdk();
 
   /// Singleton instance of the `ZebraRfidReaderSdkPlatform`.
   static ZebraRfidReaderSdkPlatform get instance => _instance;
@@ -46,8 +45,7 @@ abstract class ZebraRfidReaderSdkPlatform extends PlatformInterface {
   ///
   /// @throws [NotImplementedError] if the platform-specific implementation has not implemented this method.
   Future<List<ReaderDevice>> getAvailableReaderList() {
-    throw UnimplementedError(
-        'getAvailableReaderList() has not been implemented.');
+    throw UnimplementedError('getAvailableReaderList() has not been implemented.');
   }
 
   /// Sets the antenna power level for the connected Zebra RFID reader.
@@ -79,6 +77,19 @@ abstract class ZebraRfidReaderSdkPlatform extends PlatformInterface {
 
   /// Returns a stream of connected reader devices.
   Stream<dynamic> get connectedReaderDevice {
+    throw UnimplementedError('disconnect() has not been implemented.');
+  }
+
+  Future<void> findTheTag(String tag) async {
+    throw UnimplementedError('findTheTag() has not been implemented.');
+  }
+
+  Future<void> stopFindingTheTag() async {
+    throw UnimplementedError('stopFindingTheTag() has not been implemented.');
+  }
+
+  /// Returns a stream of connected reader devices.
+  Stream<dynamic> get findingTag {
     throw UnimplementedError('disconnect() has not been implemented.');
   }
 }

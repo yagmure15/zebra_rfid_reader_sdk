@@ -1,6 +1,7 @@
 package com.borda.zebra_rfid_reader_sdk
 
 import android.util.Log
+import com.borda.zebra_rfid_reader_sdk.utils.*
 import com.zebra.rfid.api3.*
 
 /**
@@ -31,6 +32,12 @@ class RfidEventHandler(reader: RFIDReader, private var emit: (json: String) -> U
         val myTags: Array<TagData> = reader.Actions.getReadTags(100)
         for (index in myTags.indices) {
             Log.d(LOG_TAG, "Tag ID " + myTags[index].tagID)
+            if (myTags[index].isContainsLocationInfo) {
+
+                TagLocationingResponse.setDistancePercent(myTags[index].LocationInfo.relativeDistance.toInt())
+                emit(TagLocationingResponse.toJson())
+
+            }
         }
     }
 
@@ -68,11 +75,11 @@ class RfidEventHandler(reader: RFIDReader, private var emit: (json: String) -> U
 
             if (rfidStatusEvents.StatusEventData.HandheldTriggerEventData.handheldEvent === HANDHELD_TRIGGER_EVENT_TYPE.HANDHELD_TRIGGER_PRESSED) {
                 Log.d(LOG_TAG, "HANDHELD_TRIGGER_PRESSED")
-                performInventory()
+                onTriggerPressed()
             }
             if (rfidStatusEvents.StatusEventData.HandheldTriggerEventData.handheldEvent === HANDHELD_TRIGGER_EVENT_TYPE.HANDHELD_TRIGGER_RELEASED) {
                 Log.d(LOG_TAG, "HANDHELD_TRIGGER_RELEASED")
-                stopInventory()
+                onTriggerReleased()
             }
         }
     }
@@ -81,11 +88,19 @@ class RfidEventHandler(reader: RFIDReader, private var emit: (json: String) -> U
      * Performs an RFID inventory operation.
      */
     @Synchronized
-    fun performInventory() {
+    fun onTriggerPressed() {
         // check reader connection
         if (!isReaderConnected()) return
         try {
-            reader.Actions.Inventory.perform()
+            var triggerMode: TriggerMode = BordaHandheldTrigger.getMode()
+
+            if (triggerMode == TriggerMode.INVENTORY_PERFORM) {
+                reader.Actions.Inventory.perform()
+
+            } else if (triggerMode == TriggerMode.TAG_LOCATIONING_PERFORM) {
+                val tagLocationing = TagLocationingResponse.getTag()
+                reader.Actions.TagLocationing.Perform(tagLocationing, null, null);
+            }
         } catch (e: InvalidUsageException) {
             e.printStackTrace()
         } catch (e: OperationFailureException) {
@@ -97,11 +112,18 @@ class RfidEventHandler(reader: RFIDReader, private var emit: (json: String) -> U
      * Stops the RFID inventory operation.
      */
     @Synchronized
-    fun stopInventory() {
+    fun onTriggerReleased() {
         // check reader connection
         if (!isReaderConnected()) return
         try {
-            reader.Actions.Inventory.stop()
+            var triggerMode: TriggerMode = BordaHandheldTrigger.getMode()
+
+            if (triggerMode == TriggerMode.INVENTORY_PERFORM) {
+                reader.Actions.Inventory.stop()
+
+            } else if (triggerMode == TriggerMode.TAG_LOCATIONING_PERFORM) {
+                reader.Actions.TagLocationing.Stop()
+            }
         } catch (e: InvalidUsageException) {
             e.printStackTrace()
         } catch (e: OperationFailureException) {

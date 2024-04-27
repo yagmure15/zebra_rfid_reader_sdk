@@ -14,8 +14,7 @@ class ZebraRfidReaderSdk {
   ///
   /// Returns a [Future] that completes with `null` on successful connection, or throws an exception on failure.
   Future<void> connect(String name, {ReaderConfig? readerConfig}) {
-    return ZebraRfidReaderSdkPlatform.instance
-        .connect(name, readerConfig ?? ReaderConfig.initial());
+    return ZebraRfidReaderSdkPlatform.instance.connect(name, readerConfig ?? ReaderConfig.initial());
   }
 
   /// Disconnects from the currently connected Zebra RFID reader.
@@ -55,6 +54,19 @@ class ZebraRfidReaderSdk {
 
   /// Returns a stream of connected reader devices.
   Stream<dynamic> get connectedReaderDevice {
+    return ZebraRfidReaderSdkPlatform.instance.connectedReaderDevice;
+  }
+
+  Future<void> findTheTag(String tag) async {
+    await ZebraRfidReaderSdkPlatform.instance.findTheTag(tag);
+  }
+
+  Future<void> stopFindingTheTag() async {
+    await ZebraRfidReaderSdkPlatform.instance.stopFindingTheTag();
+  }
+
+    /// Returns a stream of connected reader devices.
+  Stream<dynamic> get findingTag {
     return ZebraRfidReaderSdkPlatform.instance.connectedReaderDevice;
   }
 }

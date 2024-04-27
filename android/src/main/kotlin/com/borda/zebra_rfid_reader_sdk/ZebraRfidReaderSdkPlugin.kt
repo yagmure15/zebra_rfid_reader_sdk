@@ -1,6 +1,9 @@
 package com.borda.zebra_rfid_reader_sdk
 
 import android.util.Log
+import com.borda.zebra_rfid_reader_sdk.utils.BordaReaderDevice
+import com.borda.zebra_rfid_reader_sdk.utils.ConnectionStatus
+import com.borda.zebra_rfid_reader_sdk.utils.LOG_TAG
 import com.google.gson.Gson
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.EventChannel
@@ -19,6 +22,7 @@ class ZebraRfidReaderSdkPlugin : FlutterPlugin, MethodCallHandler {
     private lateinit var connectionHelper: ZebraConnectionHelper
 
     private lateinit var eventChannel: EventChannel
+    private lateinit var tagFindingEvent: EventChannel
     private lateinit var tagDataEventHandler: TagDataEventHandler
 
 
@@ -28,10 +32,12 @@ class ZebraRfidReaderSdkPlugin : FlutterPlugin, MethodCallHandler {
         methodChannel.setMethodCallHandler(this)
 
         eventChannel = EventChannel(flutterPluginBinding.binaryMessenger, "tagHandlerEvent")
+        tagFindingEvent = EventChannel(flutterPluginBinding.binaryMessenger, "tagFindingEvent")
 
         tagDataEventHandler = TagDataEventHandler()
 
         eventChannel.setStreamHandler(tagDataEventHandler)
+        tagFindingEvent.setStreamHandler(tagDataEventHandler)
         Log.d(LOG_TAG, "onAttachedToEngine called")
         connectionHelper =
             ZebraConnectionHelper(flutterPluginBinding.applicationContext, this::emit)
@@ -66,6 +72,16 @@ class ZebraRfidReaderSdkPlugin : FlutterPlugin, MethodCallHandler {
             "setBeeperVolume" -> {
                 val level = call.argument<Int>("level")!!
                 connectionHelper.setBeeperVolumeConfig(level)
+            }
+
+            "findTheTag" -> {
+                // val tag = call.argument<String>("tag")!!
+                val tag = "BDBD0134000000000013B745"
+                connectionHelper.findTheTag(tag)
+            }
+
+            "stopFindingTheTag" -> {
+                connectionHelper.stopFindingTheTag()
             }
 
             "getAvailableReaderList" -> {

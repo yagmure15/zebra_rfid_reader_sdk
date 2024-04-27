@@ -5,6 +5,7 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.borda.zebra_rfid_reader_sdk.utils.*
 import com.zebra.rfid.api3.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -109,6 +110,56 @@ class ZebraConnectionHelper(
     }
 
     /**
+     * Finds the tag with the given tag ID.
+     *
+     * @param tag The tag ID to find.
+     */
+    @Synchronized
+    fun findTheTag(tag: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                if (reader != null && reader!!.isConnected) {
+                    Log.d(LOG_TAG, "findTheTag called!")
+                    BordaHandheldTrigger.setMode(TriggerMode.TAG_LOCATIONING_PERFORM)
+                    TagLocationingResponse.setTag(tag)
+                    emit(TagLocationingResponse.toJson())
+                }
+            } catch (e: InvalidUsageException) {
+                e.printStackTrace()
+                Log.d(LOG_TAG, "InvalidUsageException " + e.vendorMessage)
+            } catch (e: OperationFailureException) {
+                e.printStackTrace()
+                Log.d(
+                    LOG_TAG, "OperationFailureException " + e.vendorMessage
+                )
+            }
+        }
+    }
+
+    /**
+     * Stops finding the tag.
+     */
+    @Synchronized
+    fun stopFindingTheTag() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                if (reader != null && reader!!.isConnected) {
+                    Log.d(LOG_TAG, "stopFindingTag called!")
+                    BordaHandheldTrigger.setMode(TriggerMode.INVENTORY_PERFORM)
+                }
+            } catch (e: InvalidUsageException) {
+                e.printStackTrace()
+                Log.d(LOG_TAG, "InvalidUsageException " + e.vendorMessage)
+            } catch (e: OperationFailureException) {
+                e.printStackTrace()
+                Log.d(
+                    LOG_TAG, "OperationFailureException " + e.vendorMessage
+                )
+            }
+        }
+    }
+
+    /**
      * Resets the RFID reader configuration and clears associated resources.
      */
     private fun clearConfiguration() {
@@ -159,6 +210,8 @@ class ZebraConnectionHelper(
             triggerInfo.StopTrigger.triggerType = STOP_TRIGGER_TYPE.STOP_TRIGGER_TYPE_IMMEDIATE
             try {
 
+                setDefaultRegion()
+
                 rfidEventHandler = RfidEventHandler(reader!!, emit)
                 reader!!.Events.addEventsListener(rfidEventHandler)
                 reader!!.Events.setHandheldEvent(true)
@@ -193,6 +246,15 @@ class ZebraConnectionHelper(
                 e.printStackTrace()
             }
         }
+    }
+
+    fun setDefaultRegion() {
+        /// Region configuration
+        var regulatoryConfig: RegulatoryConfig = reader!!.Config.regulatoryConfig
+        /// Index 61 means Turkey
+        val regionInfo: RegionInfo = reader!!.ReaderCapabilities.SupportedRegions.getRegionInfo(61)
+        regulatoryConfig.region = regionInfo.regionCode
+        reader!!.Config.regulatoryConfig = regulatoryConfig
     }
 
     /**
