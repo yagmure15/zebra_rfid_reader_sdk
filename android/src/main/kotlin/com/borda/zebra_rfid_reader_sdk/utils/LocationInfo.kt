@@ -1,11 +1,11 @@
 package com.borda.zebra_rfid_reader_sdk.utils
 
 class LocationInfo {
-    private var location: String? = null
-    private var distancePercent: Int? = null
+    private var tag: String? = null
+    private var distanceAsPercentage: Int? = null
 
-    constructor(location: String?, distancePercent: Int?) {
-        this.location = location
-        this.distancePercent = distancePercent
+    constructor(tag: String?, distanceAsPercentage: Int?) {
+        this.tag = tag
+        this.distanceAsPercentage = distanceAsPercentage
     }
 }
