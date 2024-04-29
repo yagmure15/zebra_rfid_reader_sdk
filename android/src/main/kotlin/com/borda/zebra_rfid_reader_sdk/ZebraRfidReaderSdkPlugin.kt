@@ -76,6 +76,7 @@ class ZebraRfidReaderSdkPlugin : FlutterPlugin, MethodCallHandler {
 
             "findTheTag" -> {
                 val tag = call.argument<String>("tag")!!
+                Log.d("ENGIN", "findTheTag called with tag -> $tag")
                 connectionHelper.findTheTag(tag)
             }
 

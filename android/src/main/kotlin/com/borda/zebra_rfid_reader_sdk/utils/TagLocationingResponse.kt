@@ -20,7 +20,7 @@ object TagLocationingResponse {
     }
 
     fun toJson(): String {
-        return Gson().toJson("{'tag': ${tag}, 'distancePercent': ${distancePercent}}")
+        return Gson().toJson(LocationInfo(tag, distancePercent))
     }
 
 }
