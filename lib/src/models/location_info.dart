@@ -12,7 +12,7 @@ class LocationInfo {
   factory LocationInfo.fromJson(Map<Object?, Object?> json) {
     return LocationInfo(
       tag: json['tag'] as String,
-      distanceAsPercentage: json['distanceAsPercentage'] as int,
+      distanceAsPercentage: json['distanceAsPercentage'] as int?,
       isAnyReaderConnected: json['isAnyReaderConnected'] as bool,
     );
   }
