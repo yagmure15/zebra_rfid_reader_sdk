@@ -1,12 +1,12 @@
 class LocationInfo {
   final String tag;
-  final int distanceAsPercentage;
   final bool isAnyReaderConnected;
+  final int? distanceAsPercentage;
 
   LocationInfo({
     required this.tag,
-    required this.distanceAsPercentage,
     required this.isAnyReaderConnected,
+    this.distanceAsPercentage,
   });
 
   factory LocationInfo.fromJson(Map<Object?, Object?> json) {
