@@ -31,27 +31,13 @@ class RfidEventHandler(reader: RFIDReader, private var emit: (json: String) -> U
     override fun eventReadNotify(e: RfidReadEvents) {
         val myTags: Array<TagData> = reader.Actions.getReadTags(100)
         if (myTags != null) {
-            Log.d("ENGIN", "tags found")
             for (index in 0 until myTags.size) {
-                Log.d("ENGIN", "Tag ID " + myTags[index].tagID)
                 if (myTags[index].isContainsLocationInfo) {
-                    Log.d(
-                        "ENGIN",
-                        "Tag locationing distance " + myTags[index].LocationInfo.relativeDistance
-                    )
                     TagLocationingResponse.setDistancePercent(myTags[index].LocationInfo.relativeDistance.toInt())
                     emit(TagLocationingResponse.toJson())
-                    Log.d(
-                        "ENGIN",
-                        "TagLocationingResponse.toJson()-> " + TagLocationingResponse.toJson()
-                    )
                 }
             }
-
-        } else {
-            Log.d("ENGIN", "No tags found")
         }
-
     }
 
     /**
@@ -79,7 +65,10 @@ class RfidEventHandler(reader: RFIDReader, private var emit: (json: String) -> U
             reader.disconnect()
 
             ReaderResponse.reset()
+            TagLocationingResponse.reset()
+
             emit(ReaderResponse.toJson())
+            emit(TagLocationingResponse.toJson())
 
         }
 

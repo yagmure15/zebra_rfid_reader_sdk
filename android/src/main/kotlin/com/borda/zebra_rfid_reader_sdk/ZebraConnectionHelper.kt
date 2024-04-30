@@ -122,6 +122,7 @@ class ZebraConnectionHelper(
                     Log.d(LOG_TAG, "findTheTag called!")
                     BordaHandheldTrigger.setMode(TriggerMode.TAG_LOCATIONING_PERFORM)
                     TagLocationingResponse.setTag(tag)
+                    TagLocationingResponse.setAnyReaderConnected(true)
                     emit(TagLocationingResponse.toJson())
                 }
             } catch (e: InvalidUsageException) {

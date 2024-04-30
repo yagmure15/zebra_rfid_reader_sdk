@@ -5,6 +5,7 @@ import com.google.gson.Gson
 object TagLocationingResponse {
     private var tag: String? = null
     private var distancePercent: Int? = null
+    private var isAnyReaderConnected: Boolean = false
 
 
     fun setTag(tag: String?) {
@@ -15,12 +16,22 @@ object TagLocationingResponse {
         return tag
     }
 
+    fun setAnyReaderConnected(isAnyReaderConnected: Boolean) {
+        this.isAnyReaderConnected = isAnyReaderConnected
+    }
+
     fun setDistancePercent(distancePercent: Int?) {
         this.distancePercent = distancePercent
     }
 
+    fun reset() {
+        this.tag = null
+        this.isAnyReaderConnected = false
+        this.distancePercent = null
+    }
+
     fun toJson(): String {
-        return Gson().toJson(LocationInfo(tag, distancePercent))
+        return Gson().toJson(LocationInfo(tag, distancePercent, isAnyReaderConnected))
     }
 
 }
