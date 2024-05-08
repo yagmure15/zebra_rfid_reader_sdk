@@ -8,11 +8,12 @@ import com.zebra.rfid.api3.*
  * Handles RFID events such as tag reads, status changes, and disconnections.
  *
  * @property reader The RFID reader instance.
- * @property emit The function used to emit RFID event data.
+ * @property tagHandlerEvent The event handler for tag data events.
+ * @property tagFindHandler The event handler for tag find events.
  */
 class RfidEventHandler(
     reader: RFIDReader,
-    private var connectionHandler: TagDataEventHandler,
+    private var tagHandlerEvent: TagDataEventHandler,
     private var tagFindHandler: TagDataEventHandler
 ) :
     RfidEventsListener {
@@ -59,7 +60,7 @@ class RfidEventHandler(
 
             ReaderResponse.setConnectionStatus(ConnectionStatus.connected)
             ReaderResponse.setBatteryLevel(batteryData.level.toString())
-            connectionHandler.sendEvent(ReaderResponse.toJson())
+            tagHandlerEvent.sendEvent(ReaderResponse.toJson())
 
         }
 
@@ -72,7 +73,7 @@ class RfidEventHandler(
             TagLocationingResponse.reset()
             val triggerMode = BordaHandheldTrigger.getMode()
             if (triggerMode == TriggerMode.INVENTORY_PERFORM) {
-                connectionHandler.sendEvent(ReaderResponse.toJson())
+                tagHandlerEvent.sendEvent(ReaderResponse.toJson())
             } else if (triggerMode == TriggerMode.TAG_LOCATIONING_PERFORM) {
                 tagFindHandler.sendEvent(TagLocationingResponse.toJson())
             }

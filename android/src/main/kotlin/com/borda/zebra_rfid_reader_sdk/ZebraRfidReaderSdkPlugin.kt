@@ -21,7 +21,7 @@ class ZebraRfidReaderSdkPlugin : FlutterPlugin, MethodCallHandler {
     private lateinit var methodChannel: MethodChannel
     private lateinit var connectionHelper: ZebraConnectionHelper
 
-    private lateinit var eventChannel: EventChannel
+    private lateinit var tagHandlerEvent: EventChannel
     private lateinit var tagFindingEvent: EventChannel
     private lateinit var tagDataEventHandler: TagDataEventHandler
     private lateinit var tagFindingEventHandler: TagDataEventHandler
@@ -32,14 +32,14 @@ class ZebraRfidReaderSdkPlugin : FlutterPlugin, MethodCallHandler {
             MethodChannel(flutterPluginBinding.binaryMessenger, "borda/zebra_rfid_reader_sdk")
         methodChannel.setMethodCallHandler(this)
 
-        eventChannel = EventChannel(flutterPluginBinding.binaryMessenger, "tagHandlerEvent")
+        tagHandlerEvent = EventChannel(flutterPluginBinding.binaryMessenger, "tagHandlerEvent")
         tagFindingEvent = EventChannel(flutterPluginBinding.binaryMessenger, "tagFindingEvent")
 
         tagDataEventHandler = TagDataEventHandler()
         tagFindingEventHandler = TagDataEventHandler()
 
 
-        eventChannel.setStreamHandler(tagDataEventHandler)
+        tagHandlerEvent.setStreamHandler(tagDataEventHandler)
         tagFindingEvent.setStreamHandler(tagFindingEventHandler)
         Log.d(LOG_TAG, "onAttachedToEngine called")
         connectionHelper =
@@ -108,7 +108,7 @@ class ZebraRfidReaderSdkPlugin : FlutterPlugin, MethodCallHandler {
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         methodChannel.setMethodCallHandler(null)
-        eventChannel.setStreamHandler(null)
+        tagHandlerEvent.setStreamHandler(null)
         tagFindingEvent.setStreamHandler(null)
         connectionHelper.dispose()
     }
