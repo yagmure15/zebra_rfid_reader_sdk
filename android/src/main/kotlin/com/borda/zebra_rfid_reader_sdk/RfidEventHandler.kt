@@ -10,7 +10,11 @@ import com.zebra.rfid.api3.*
  * @property reader The RFID reader instance.
  * @property emit The function used to emit RFID event data.
  */
-class RfidEventHandler(reader: RFIDReader, private var emit: (json: String) -> Unit) :
+class RfidEventHandler(
+    reader: RFIDReader,
+    private var connectionHandler: TagDataEventHandler,
+    private var tagFindHandler: TagDataEventHandler
+) :
     RfidEventsListener {
     private var reader: RFIDReader
 
@@ -34,7 +38,7 @@ class RfidEventHandler(reader: RFIDReader, private var emit: (json: String) -> U
             for (index in 0 until myTags.size) {
                 if (myTags[index].isContainsLocationInfo) {
                     TagLocationingResponse.setDistancePercent(myTags[index].LocationInfo.relativeDistance.toInt())
-                    emit(TagLocationingResponse.toJson())
+                    tagFindHandler.sendEvent(TagLocationingResponse.toJson())
                 }
             }
         }
@@ -55,7 +59,7 @@ class RfidEventHandler(reader: RFIDReader, private var emit: (json: String) -> U
 
             ReaderResponse.setConnectionStatus(ConnectionStatus.connected)
             ReaderResponse.setBatteryLevel(batteryData.level.toString())
-            emit(ReaderResponse.toJson())
+            connectionHandler.sendEvent(ReaderResponse.toJson())
 
         }
 
@@ -66,10 +70,12 @@ class RfidEventHandler(reader: RFIDReader, private var emit: (json: String) -> U
 
             ReaderResponse.reset()
             TagLocationingResponse.reset()
-
-            emit(ReaderResponse.toJson())
-            emit(TagLocationingResponse.toJson())
-
+            val triggerMode = BordaHandheldTrigger.getMode()
+            if (triggerMode == TriggerMode.INVENTORY_PERFORM) {
+                connectionHandler.sendEvent(ReaderResponse.toJson())
+            } else if (triggerMode == TriggerMode.TAG_LOCATIONING_PERFORM) {
+                tagFindHandler.sendEvent(TagLocationingResponse.toJson())
+            }
         }
 
         /// Handheld Trigger Event

@@ -15,11 +15,13 @@ import kotlinx.coroutines.launch
  * and managing the configuration of the device.
  *
  * @property context Application context.
- * @property emit A lambda function to emit data received from the RFID reader.
+ * @property connectionHandler A lambda function to handle connection events.
+ * @property tagFindHandler A lambda function to handle tag locationing events.
  */
 class ZebraConnectionHelper(
     context: Context,
-    private var emit: (String) -> Unit
+    private var connectionHandler: TagDataEventHandler,
+    private var tagFindHandler: TagDataEventHandler
 ) :
     ViewModel() {
     private var readers: Readers
@@ -52,7 +54,7 @@ class ZebraConnectionHelper(
 
             ReaderResponse.setConnectionStatus(ConnectionStatus.connecting)
             ReaderResponse.setName(name)
-            emit(ReaderResponse.toJson())
+            connectionHandler.sendEvent(ReaderResponse.toJson())
 
             Log.d(LOG_TAG, "connect called! ADDRESS -> $name")
             if (reader != null && reader!!.isConnected) {
@@ -87,7 +89,7 @@ class ZebraConnectionHelper(
                             reader!!.Config.getDeviceStatus(true, true, false)
 
                             ReaderResponse.setConnectionStatus(ConnectionStatus.connected)
-                            emit(ReaderResponse.toJson())
+                            connectionHandler.sendEvent(ReaderResponse.toJson())
 
                         }
                     }
@@ -97,13 +99,13 @@ class ZebraConnectionHelper(
                 e.printStackTrace()
                 Log.d(LOG_TAG, "CONNECTION FAILED -> InvalidUsageException")
                 ReaderResponse.setAsConnectionError()
-                emit(ReaderResponse.toJson())
+                connectionHandler.sendEvent(ReaderResponse.toJson())
 
             } catch (e: OperationFailureException) {
                 e.printStackTrace()
                 Log.d(LOG_TAG, "CONNECTION FAILED ->  ${e.results}")
                 ReaderResponse.setAsConnectionError()
-                emit(ReaderResponse.toJson())
+                connectionHandler.sendEvent(ReaderResponse.toJson())
 
             }
         }
@@ -123,7 +125,7 @@ class ZebraConnectionHelper(
                     BordaHandheldTrigger.setMode(TriggerMode.TAG_LOCATIONING_PERFORM)
                     TagLocationingResponse.setTag(tag)
                     TagLocationingResponse.setAnyReaderConnected(true)
-                    emit(TagLocationingResponse.toJson())
+                    tagFindHandler.sendEvent(TagLocationingResponse.toJson())
                 }
             } catch (e: InvalidUsageException) {
                 e.printStackTrace()
@@ -180,7 +182,7 @@ class ZebraConnectionHelper(
             reader!!.disconnect()
 
             ReaderResponse.reset()
-            emit(ReaderResponse.toJson())
+            connectionHandler.sendEvent(ReaderResponse.toJson())
 
         } catch (e: InvalidUsageException) {
             e.printStackTrace()
@@ -213,7 +215,7 @@ class ZebraConnectionHelper(
 
                 setDefaultRegion()
 
-                rfidEventHandler = RfidEventHandler(reader!!, emit)
+                rfidEventHandler = RfidEventHandler(reader!!, connectionHandler, tagFindHandler)
                 reader!!.Events.addEventsListener(rfidEventHandler)
                 reader!!.Events.setHandheldEvent(true)
                 reader!!.Events.setTagReadEvent(true)

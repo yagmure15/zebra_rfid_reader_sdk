@@ -24,6 +24,7 @@ class ZebraRfidReaderSdkPlugin : FlutterPlugin, MethodCallHandler {
     private lateinit var eventChannel: EventChannel
     private lateinit var tagFindingEvent: EventChannel
     private lateinit var tagDataEventHandler: TagDataEventHandler
+    private lateinit var tagFindingEventHandler: TagDataEventHandler
 
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
@@ -35,12 +36,14 @@ class ZebraRfidReaderSdkPlugin : FlutterPlugin, MethodCallHandler {
         tagFindingEvent = EventChannel(flutterPluginBinding.binaryMessenger, "tagFindingEvent")
 
         tagDataEventHandler = TagDataEventHandler()
+        tagFindingEventHandler = TagDataEventHandler()
+
 
         eventChannel.setStreamHandler(tagDataEventHandler)
-        tagFindingEvent.setStreamHandler(tagDataEventHandler)
+        tagFindingEvent.setStreamHandler(tagFindingEventHandler)
         Log.d(LOG_TAG, "onAttachedToEngine called")
         connectionHelper =
-            ZebraConnectionHelper(flutterPluginBinding.applicationContext, this::emit)
+            ZebraConnectionHelper(flutterPluginBinding.applicationContext, tagDataEventHandler, tagFindingEventHandler)
     }
 
     override fun onMethodCall(call: MethodCall, result: Result) =
@@ -106,11 +109,7 @@ class ZebraRfidReaderSdkPlugin : FlutterPlugin, MethodCallHandler {
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         methodChannel.setMethodCallHandler(null)
         eventChannel.setStreamHandler(null)
+        tagFindingEvent.setStreamHandler(null)
         connectionHelper.dispose()
-    }
-
-
-    private fun emit(tagData: String) {
-        tagDataEventHandler.sendEvent(tagData)
     }
 }

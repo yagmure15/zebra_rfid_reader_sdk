@@ -72,7 +72,7 @@ class MethodChannelZebraRfidReaderSdk extends ZebraRfidReaderSdkPlatform {
     await _methodChannel.invokeMethod<void>('stopFindingTheTag');
   }
 
-    /// Returns a stream of connected reader devices.
+  /// Returns a stream of connected reader devices.
   @override
   Stream<dynamic> get findingTag {
     return _tagFindingEventChannel.receiveBroadcastStream();
