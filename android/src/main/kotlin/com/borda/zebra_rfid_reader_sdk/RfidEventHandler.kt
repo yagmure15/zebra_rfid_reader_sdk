@@ -71,12 +71,9 @@ class RfidEventHandler(
 
             ReaderResponse.reset()
             TagLocationingResponse.reset()
-            val triggerMode = BordaHandheldTrigger.getMode()
-            if (triggerMode == TriggerMode.INVENTORY_PERFORM) {
-                tagHandlerEvent.sendEvent(ReaderResponse.toJson())
-            } else if (triggerMode == TriggerMode.TAG_LOCATIONING_PERFORM) {
-                tagFindHandler.sendEvent(TagLocationingResponse.toJson())
-            }
+            tagHandlerEvent.sendEvent(ReaderResponse.toJson())
+            tagFindHandler.sendEvent(TagLocationingResponse.toJson())
+
         }
 
         /// Handheld Trigger Event
