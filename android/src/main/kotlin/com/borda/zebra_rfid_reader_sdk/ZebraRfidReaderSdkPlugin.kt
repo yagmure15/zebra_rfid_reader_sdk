@@ -90,8 +90,12 @@ class ZebraRfidReaderSdkPlugin : FlutterPlugin, MethodCallHandler {
             "getAvailableReaderList" -> {
                 Log.d(LOG_TAG, "getAvailableReaderList called")
                 val readers = connectionHelper.getAvailableReaderList()
+                Log.d(LOG_TAG, "readers 1. name " +  readers[0].name)
+
                 val dataList = mutableListOf<BordaReaderDevice>()
                 for (reader in readers) {
+                    Log.d(LOG_TAG, "inside for - name: " +  reader.name)
+
                     val device = BordaReaderDevice(
                         ConnectionStatus.notConnected,
                         reader.name.toString(),
@@ -99,6 +103,8 @@ class ZebraRfidReaderSdkPlugin : FlutterPlugin, MethodCallHandler {
                     )
                     dataList.add(device)
                 }
+                Log.d(LOG_TAG, "dataList 1.  " +  dataList[0].toString())
+                Log.d(LOG_TAG, "GSON.  " +  Gson().toJson(dataList).toString())
 
                 result.success(Gson().toJson(dataList))
             }
