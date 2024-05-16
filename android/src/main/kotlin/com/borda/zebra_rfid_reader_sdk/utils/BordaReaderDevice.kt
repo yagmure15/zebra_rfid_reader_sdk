@@ -1,5 +1,7 @@
 package com.borda.zebra_rfid_reader_sdk.utils
 
+import com.google.gson.annotations.SerializedName
+
 /**
  * Represents a single Borda reader device, encapsulating its connection status, name, and battery level.
  *
@@ -8,8 +10,11 @@ package com.borda.zebra_rfid_reader_sdk.utils
  * @property batteryLevel The battery level of the reader (optional).
  */
 class BordaReaderDevice {
+    @SerializedName("connectionStatus")
     private var connectionStatus: ConnectionStatus = ConnectionStatus.notConnected
+    @SerializedName("name")
     private var name: String? = null
+    @SerializedName("batteryLevel")
     private var batteryLevel: String? = null
 
     constructor(connectionStatus: ConnectionStatus, name: String?, batteryLevel: String?) {
