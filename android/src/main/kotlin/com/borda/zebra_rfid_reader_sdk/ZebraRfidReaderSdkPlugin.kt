@@ -89,6 +89,7 @@ class ZebraRfidReaderSdkPlugin : FlutterPlugin, MethodCallHandler {
 
             "getAvailableReaderList" -> {
                 Log.d(LOG_TAG, "getAvailableReaderList called")
+                println("NATIVE SIDE: called getAvailableReaderList")
                 val readers = connectionHelper.getAvailableReaderList()
                 val dataList = mutableListOf<BordaReaderDevice>()
                 for (reader in readers) {
