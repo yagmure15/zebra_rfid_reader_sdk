@@ -101,6 +101,9 @@ class ZebraRfidReaderSdkPlugin : FlutterPlugin, MethodCallHandler {
                     )
                     dataList.add(device)
                 }
+                Log.d(LOG_TAG, "DATA LIST "  + dataList[0].toString())
+                Log.d(LOG_TAG, "GSON "  + Gson().toJson(dataList))
+
 
                 result.success(Gson().toJson(dataList))
             }
