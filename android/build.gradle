@@ -44,7 +44,7 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 19
+        minSdkVersion 26
     }
    // ndkVersion '25.1.8937393'
     buildToolsVersion '30.0.3'
