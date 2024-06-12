@@ -35,14 +35,14 @@ class RfidEventHandler(
      */
     override fun eventReadNotify(e: RfidReadEvents) {
         val myTags: Array<TagData> = reader.Actions.getReadTags(100)
-        if (myTags != null) {
-            for (index in 0 until myTags.size) {
+
+            for (index in myTags.indices) {
                 if (myTags[index].isContainsLocationInfo) {
                     TagLocationingResponse.setDistancePercent(myTags[index].LocationInfo.relativeDistance.toInt())
                     tagFindHandler.sendEvent(TagLocationingResponse.toJson())
                 }
             }
-        }
+
     }
 
     /**
