@@ -213,7 +213,15 @@ class ZebraConnectionHelper(
     private fun configureReader(readerConfig: HashMap<String, Any>) {
         if (reader!!.isConnected) {
             Log.d(TAG, "ConfigureReader " + reader!!.hostName)
-            var antennaPower = readerConfig["antennaPower"] as Int
+
+            var antennaPower = 0
+
+            antennaPower = if (readerConfig["antennaPower"] == null) {
+                getMaxAntennaPower()
+            } else {
+                readerConfig["antennaPower"] as Int
+            }
+
             var beeperVolume = readerConfig["beeperVolume"] as Int
             var isDynamicPowerEnable = readerConfig["isDynamicPowerEnable"] as Boolean
 
@@ -308,7 +316,6 @@ class ZebraConnectionHelper(
      */
     fun setAntennaConfig(transmitPowerIndex: Int) {
         val antennaRfConfig = reader!!.Config.Antennas.getAntennaRfConfig(1)
-        reader!!.ReaderCapabilities.firwareVersion
         antennaRfConfig.setrfModeTableIndex(0)
         antennaRfConfig.tari = 0
         antennaRfConfig.transmitPowerIndex = transmitPowerIndex
@@ -327,6 +334,11 @@ class ZebraConnectionHelper(
             intArrayOf(transmitPowerLevelValues.first(), transmitPowerLevelValues.last())
         ReaderResponse.setAntennaRange(antennaRange)
         tagHandlerEvent.sendEvent(ReaderResponse.toJson())
+    }
+
+    private fun getMaxAntennaPower(): Int {
+        var transmitPowerLevelValues = reader!!.ReaderCapabilities.transmitPowerLevelValues
+        return transmitPowerLevelValues.last() - transmitPowerLevelValues.first()
     }
 
     /**
