@@ -16,10 +16,13 @@ class BordaReaderDevice {
     private var name: String? = null
     @SerializedName("batteryLevel")
     private var batteryLevel: String? = null
+    @SerializedName("antennaRange")
+    private var antennaRange: IntArray? = null
 
-    constructor(connectionStatus: ConnectionStatus, name: String?, batteryLevel: String?) {
+    constructor(connectionStatus: ConnectionStatus, name: String?, batteryLevel: String?, antennaRange: IntArray?) {
         this.connectionStatus = connectionStatus
         this.name = name
         this.batteryLevel = batteryLevel
+        this.antennaRange = antennaRange
     }
 }

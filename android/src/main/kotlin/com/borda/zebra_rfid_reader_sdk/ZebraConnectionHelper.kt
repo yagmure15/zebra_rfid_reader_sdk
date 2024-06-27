@@ -10,6 +10,7 @@ import com.zebra.rfid.api3.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+
 /**
  * ZebraConnectionHelper is a helper class for connecting to a Zebra RFID reader via Bluetooth
  * and managing the configuration of the device.
@@ -51,6 +52,7 @@ class ZebraConnectionHelper(
     @Synchronized
     fun connect(name: String, readerConfig: HashMap<String, Any>) {
         viewModelScope.launch(Dispatchers.IO) {
+
 
             ReaderResponse.setConnectionStatus(ConnectionStatus.connecting)
             ReaderResponse.setName(name)
@@ -97,19 +99,24 @@ class ZebraConnectionHelper(
 
             } catch (e: InvalidUsageException) {
                 e.printStackTrace()
-                Log.d(LOG_TAG, "CONNECTION FAILED -> InvalidUsageException")
+                Log.d(LOG_TAG, "CONNECTION FAILED 1 -> InvalidUsageException")
                 ReaderResponse.setAsConnectionError()
                 tagHandlerEvent.sendEvent(ReaderResponse.toJson())
 
             } catch (e: OperationFailureException) {
+                if (e.results == RFIDResults.RFID_READER_REGION_NOT_CONFIGURED) {
+                    setDefaultRegion("TUR", name, readerConfig)
+                }
+
                 e.printStackTrace()
-                Log.d(LOG_TAG, "CONNECTION FAILED ->  ${e.results}")
+                Log.d(LOG_TAG, "CONNECTION FAILED 2 ->  ${e.results}")
                 ReaderResponse.setAsConnectionError()
                 tagHandlerEvent.sendEvent(ReaderResponse.toJson())
 
             }
         }
     }
+
 
     /**
      * Finds the tag with the given tag ID.
@@ -215,8 +222,6 @@ class ZebraConnectionHelper(
             triggerInfo.StopTrigger.triggerType = STOP_TRIGGER_TYPE.STOP_TRIGGER_TYPE_IMMEDIATE
             try {
 
-                setDefaultRegion()
-
                 rfidEventHandler = RfidEventHandler(reader!!, tagHandlerEvent, tagFindHandler)
                 reader!!.Events.addEventsListener(rfidEventHandler)
                 reader!!.Events.setHandheldEvent(true)
@@ -253,13 +258,38 @@ class ZebraConnectionHelper(
         }
     }
 
-    fun setDefaultRegion() {
-        /// Region configuration
-        var regulatoryConfig: RegulatoryConfig = reader!!.Config.regulatoryConfig
-        /// Index 61 means Turkey
-        val regionInfo: RegionInfo = reader!!.ReaderCapabilities.SupportedRegions.getRegionInfo(61)
-        regulatoryConfig.region = regionInfo.regionCode
-        reader!!.Config.regulatoryConfig = regulatoryConfig
+    private fun setDefaultRegion(
+        region: String,
+        name: String,
+        readerConfig: HashMap<String, Any>
+    ) {
+        try {
+            if (reader != null) {
+                val regulatoryConfig = reader!!.Config.regulatoryConfig
+                val regions = reader!!.ReaderCapabilities.SupportedRegions
+                val len = regions.length()
+                for (i in 0 until len) {
+                    val regionInfo = regions.getRegionInfo(i)
+
+                    if (region == regionInfo.regionCode) {
+                        val channels = arrayOf("865700", "866300", "866900", "867500")
+                        regulatoryConfig.region = regionInfo.regionCode
+                        regulatoryConfig.setEnabledChannels(channels)
+                        regulatoryConfig.setIsHoppingOn(true)
+                        reader!!.Config.regulatoryConfig = regulatoryConfig
+                    }
+                }
+                connect(name, readerConfig)
+            }
+        } catch (e: InvalidUsageException) {
+            e.printStackTrace()
+            Log.d(LOG_TAG, "setDefaultRegion2 -> InvalidUsageException " + e.vendorMessage)
+        } catch (e: OperationFailureException) {
+            e.printStackTrace()
+            Log.d(
+                LOG_TAG, "setDefaultRegion2 -> OperationFailureException " + e.vendorMessage
+            )
+        }
     }
 
     /**
@@ -278,10 +308,25 @@ class ZebraConnectionHelper(
      */
     fun setAntennaConfig(transmitPowerIndex: Int) {
         val antennaRfConfig = reader!!.Config.Antennas.getAntennaRfConfig(1)
+        reader!!.ReaderCapabilities.firwareVersion
         antennaRfConfig.setrfModeTableIndex(0)
         antennaRfConfig.tari = 0
         antennaRfConfig.transmitPowerIndex = transmitPowerIndex
         reader!!.Config.Antennas.setAntennaRfConfig(1, antennaRfConfig)
+        setAntennaRange()
+
+    }
+
+    /**
+     * Sets the antenna range.
+     */
+
+    private fun setAntennaRange() {
+        var transmitPowerLevelValues = reader!!.ReaderCapabilities.transmitPowerLevelValues
+        var antennaRange: IntArray =
+            intArrayOf(transmitPowerLevelValues.first(), transmitPowerLevelValues.last())
+        ReaderResponse.setAntennaRange(antennaRange)
+        tagHandlerEvent.sendEvent(ReaderResponse.toJson())
     }
 
     /**

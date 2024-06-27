@@ -96,6 +96,7 @@ class ZebraRfidReaderSdkPlugin : FlutterPlugin, MethodCallHandler {
                         ConnectionStatus.notConnected,
                         reader.name.toString(),
                         null,
+                        null
                     )
                     dataList.add(device)
                 }
