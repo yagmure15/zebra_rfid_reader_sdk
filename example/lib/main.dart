@@ -6,7 +6,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:zebra_rfid_reader_sdk/zebra_rfid_reader_sdk.dart';
-import 'package:zebra_rfid_reader_sdk_example/find_page.dart';
 
 void main() {
   runApp(const MaterialApp(home: MyApp()));
@@ -22,6 +21,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final _zebraRfidReaderSdkPlugin = ZebraRfidReaderSdk();
   List<ReaderDevice> availableReaderList = [];
+  List<TagDataModel> readTags = [];
   ReaderDevice connectedReader = ReaderDevice.initial();
   double antennaPower = 270;
   double beeperVolume = 3;
@@ -31,6 +31,18 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     listenToEvent();
+    listenToReadTags();
+  }
+
+  void listenToReadTags() {
+    _zebraRfidReaderSdkPlugin.readTags.listen((event) {
+      final result = jsonDecode(event.toString());
+      final readTag = TagDataModel.fromJson(result);
+      readTags.removeWhere((element) => element.tagId == readTag.tagId);
+      setState(() {
+        readTags.insert(0, readTag);
+      });
+    });
   }
 
   void listenToEvent() {
@@ -189,27 +201,18 @@ class _MyAppState extends State<MyApp> {
                   },
                 ),
               ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: readTags.length,
+                  itemBuilder: (context, index) => Text(readTags[index].tagId),
+                ),
+              ),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: getAvailableReaderList,
                   child: const Text('Get Available ReaderDevice List'),
                 ),
-              ),
-              Row(
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const FindPage()));
-                    },
-                    child: const Text('start'),
-                  ),
-                  const SizedBox(width: 16),
-                  ElevatedButton(
-                    onPressed: stopFindingTheTag,
-                    child: const Text('stop'),
-                  ),
-                ],
               ),
             ],
           ),

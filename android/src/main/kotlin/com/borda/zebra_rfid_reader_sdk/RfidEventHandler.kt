@@ -3,6 +3,9 @@ package com.borda.zebra_rfid_reader_sdk
 import android.util.Log
 import com.borda.zebra_rfid_reader_sdk.utils.*
 import com.zebra.rfid.api3.*
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 /**
  * Handles RFID events such as tag reads, status changes, and disconnections.
@@ -12,21 +15,12 @@ import com.zebra.rfid.api3.*
  * @property tagFindHandler The event handler for tag find events.
  */
 class RfidEventHandler(
-    reader: RFIDReader,
+    private var reader: RFIDReader,
     private var tagHandlerEvent: TagDataEventHandler,
-    private var tagFindHandler: TagDataEventHandler
+    private var tagFindHandler: TagDataEventHandler,
+    private var readTagEvent: TagDataEventHandler,
 ) :
     RfidEventsListener {
-    private var reader: RFIDReader
-
-    /**
-     * Initializes the RFID event handler with the provided RFID reader instance.
-     *
-     * @param reader The RFID reader instance.
-     */
-    init {
-        this.reader = reader
-    }
 
     /**
      * Handles RFID read events.
@@ -36,10 +30,16 @@ class RfidEventHandler(
     override fun eventReadNotify(e: RfidReadEvents) {
         val myTags: Array<TagData> = reader.Actions.getReadTags(100)
         if (myTags != null) {
-            for (index in 0 until myTags.size) {
+            for (index in myTags.indices) {
                 if (myTags[index].isContainsLocationInfo) {
                     TagLocationingResponse.setDistancePercent(myTags[index].LocationInfo.relativeDistance.toInt())
                     tagFindHandler.sendEvent(TagLocationingResponse.toJson())
+                }else{
+                    val tagData = TagDataResponse(
+                        myTags[index].tagID,
+                        Date(System.currentTimeMillis()).toString()
+                    )
+                    readTagEvent.sendEvent(tagData.toJson())
                 }
             }
         }
@@ -102,6 +102,8 @@ class RfidEventHandler(
 
             if (triggerMode == TriggerMode.INVENTORY_PERFORM) {
                 reader.Actions.Inventory.perform()
+                Thread.sleep(500);
+
 
             } else if (triggerMode == TriggerMode.TAG_LOCATIONING_PERFORM) {
                 val tagLocationing = TagLocationingResponse.getTag()

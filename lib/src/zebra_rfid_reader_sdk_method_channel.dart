@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
-import 'package:zebra_rfid_reader_sdk/src/models/reader_device.dart';
 import 'package:zebra_rfid_reader_sdk/src/models/reader_config.dart';
+import 'package:zebra_rfid_reader_sdk/src/models/reader_device.dart';
 
 import 'zebra_rfid_reader_sdk_platform_interface.dart';
 
@@ -11,6 +11,7 @@ class MethodChannelZebraRfidReaderSdk extends ZebraRfidReaderSdkPlatform {
   final _methodChannel = const MethodChannel('borda/zebra_rfid_reader_sdk');
   final EventChannel _eventChannel = const EventChannel("tagHandlerEvent");
   final EventChannel _tagFindingEventChannel = const EventChannel("tagFindingEvent");
+  final EventChannel _readTagsEventChannel = const EventChannel("readTagEvent");
 
   /// Returns a list of available readers.
   @override
@@ -76,5 +77,10 @@ class MethodChannelZebraRfidReaderSdk extends ZebraRfidReaderSdkPlatform {
   @override
   Stream<dynamic> get findingTag {
     return _tagFindingEventChannel.receiveBroadcastStream();
+  }
+  /// Returns a stream of read tags.
+  @override
+  Stream<dynamic> get readTags {
+    return _readTagsEventChannel.receiveBroadcastStream();
   }
 }

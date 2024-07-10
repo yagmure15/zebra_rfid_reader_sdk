@@ -16,26 +16,25 @@ import kotlinx.coroutines.launch
  * and managing the configuration of the device.
  *
  * @property context Application context.
- * @property connectionHandler A lambda function to handle connection events.
  * @property tagFindHandler A lambda function to handle tag locationing events.
  */
 class ZebraConnectionHelper(
-    context: Context,
+    private var context: Context,
     private var tagHandlerEvent: TagDataEventHandler,
-    private var tagFindHandler: TagDataEventHandler
+    private var tagFindHandler: TagDataEventHandler,
+    private var readTagEvent: TagDataEventHandler,
 ) :
     ViewModel() {
     private var readers: Readers
     private var availableRFIDReaderList: ArrayList<ReaderDevice>? = null
     private var readerDevice: ReaderDevice? = null
     private var reader: RFIDReader? = null
-    private var mContext = context
     private var rfidEventHandler: RfidEventHandler? = null
 
 
     init {
         Log.d(LOG_TAG, "Creating reader for bluetooth connection")
-        readers = Readers(mContext, ENUM_TRANSPORT.BLUETOOTH)
+        readers = Readers(context, ENUM_TRANSPORT.BLUETOOTH)
     }
 
     override fun onCleared() {
@@ -46,7 +45,6 @@ class ZebraConnectionHelper(
     /**
      * Connects to the RFID reader with the given user configuration.
      *
-     * @param address The Bluetooth address of the reader.
      * @param readerConfig User configuration.
      */
     @Synchronized
@@ -175,7 +173,7 @@ class ZebraConnectionHelper(
      * Resets the RFID reader configuration and clears associated resources.
      */
     private fun clearConfiguration() {
-        readers = Readers(mContext, ENUM_TRANSPORT.BLUETOOTH)
+        readers = Readers(context, ENUM_TRANSPORT.BLUETOOTH)
         availableRFIDReaderList = null
         readerDevice = null
         reader = null
@@ -230,7 +228,7 @@ class ZebraConnectionHelper(
             triggerInfo.StopTrigger.triggerType = STOP_TRIGGER_TYPE.STOP_TRIGGER_TYPE_IMMEDIATE
             try {
 
-                rfidEventHandler = RfidEventHandler(reader!!, tagHandlerEvent, tagFindHandler)
+                rfidEventHandler = RfidEventHandler(reader!!, tagHandlerEvent, tagFindHandler, readTagEvent)
                 reader!!.Events.addEventsListener(rfidEventHandler)
                 reader!!.Events.setHandheldEvent(true)
                 reader!!.Events.setTagReadEvent(true)
@@ -266,6 +264,36 @@ class ZebraConnectionHelper(
         }
     }
 
+    /**
+     * Sets the singulation.
+     *
+     * @param tagPopulation Tag population.
+     */
+    private fun setSingulation(tagPopulation: Short?) {
+        try {
+            val s1_singulationControl = reader!!.Config.Antennas.getSingulationControl(1)
+            s1_singulationControl.session = SESSION.SESSION_S0
+            s1_singulationControl.Action.inventoryState = INVENTORY_STATE.INVENTORY_STATE_A
+            s1_singulationControl.Action.setPerformStateAwareSingulationAction(true)
+            s1_singulationControl.Action.slFlag = SL_FLAG.SL_ALL
+
+            // TODO: tagPopulation info is taken from users. If it is not provided, it is set to 100.
+            s1_singulationControl.tagPopulation = tagPopulation ?: 100
+            reader!!.Config.Antennas.setSingulationControl(1, s1_singulationControl)
+        } catch (e: InvalidUsageException) {
+            e.printStackTrace()
+        } catch (e: OperationFailureException) {
+            e.printStackTrace()
+        }
+    }
+
+    /**
+     * Sets the default region.
+     *
+     * @param region The region code.
+     * @param name The reader name.
+     * @param readerConfig User configuration.
+     */
     private fun setDefaultRegion(
         region: String,
         name: String,
@@ -321,7 +349,6 @@ class ZebraConnectionHelper(
         antennaRfConfig.transmitPowerIndex = transmitPowerIndex
         reader!!.Config.Antennas.setAntennaRfConfig(1, antennaRfConfig)
         setAntennaRange()
-
     }
 
     /**
@@ -382,4 +409,8 @@ class ZebraConnectionHelper(
             e.printStackTrace()
         }
     }
+
+
 }
+
+

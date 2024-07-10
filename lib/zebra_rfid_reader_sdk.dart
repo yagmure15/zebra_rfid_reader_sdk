@@ -9,3 +9,4 @@ export 'src/zebra_rfid_reader_sdk.dart';
 export 'src/models/reader_device.dart';
 export 'src/models/reader_config.dart';
 export 'src/models/location_info.dart';
+export 'src/models/tag_data.dart';

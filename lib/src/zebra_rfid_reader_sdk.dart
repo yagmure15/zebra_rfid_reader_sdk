@@ -65,8 +65,12 @@ class ZebraRfidReaderSdk {
     await ZebraRfidReaderSdkPlatform.instance.stopFindingTheTag();
   }
 
-    /// Returns a stream of connected reader devices.
+  /// Returns a stream of connected reader devices.
   Stream<dynamic> get findingTag {
     return ZebraRfidReaderSdkPlatform.instance.findingTag;
+  }
+
+  Stream<dynamic> get readTags {
+    return ZebraRfidReaderSdkPlatform.instance.readTags;
   }
 }
