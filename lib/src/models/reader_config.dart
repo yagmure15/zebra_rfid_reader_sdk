@@ -1,7 +1,7 @@
 enum BeeperVolume { quiet, low, medium, high }
 
 class ReaderConfig {
-  final int antennaPower;
+  final int? antennaPower;
   final BeeperVolume beeperVolume;
   final bool isDynamicPowerEnable;
 
@@ -21,7 +21,7 @@ class ReaderConfig {
 
   factory ReaderConfig.initial() {
     return ReaderConfig(
-      antennaPower: 270,
+      antennaPower: null,
       beeperVolume: BeeperVolume.high,
       isDynamicPowerEnable: true,
     );

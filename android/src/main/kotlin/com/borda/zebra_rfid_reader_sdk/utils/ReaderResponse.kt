@@ -15,6 +15,7 @@ object ReaderResponse {
     private var connectionStatus: ConnectionStatus = ConnectionStatus.notConnected
     private var name: String? = null
     private var batteryLevel: String? = null
+    private var antennaRange: IntArray? = null
 
     /**
      * Update the reader connection status
@@ -61,9 +62,17 @@ object ReaderResponse {
     }
 
     /**
+     * Update the reader antenna range
+     *
+     * @param anntennaRange
+     */
+    fun setAntennaRange(antennaRange: IntArray?) {
+        this.antennaRange = antennaRange
+    }
+    /**
      *  Return the existing singleton object itself
      */
     fun toJson(): String {
-        return Gson().toJson(BordaReaderDevice(connectionStatus, name, batteryLevel))
+        return Gson().toJson(BordaReaderDevice(connectionStatus, name, batteryLevel, antennaRange))
     }
 }

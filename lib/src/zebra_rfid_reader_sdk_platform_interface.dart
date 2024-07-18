@@ -92,4 +92,9 @@ abstract class ZebraRfidReaderSdkPlatform extends PlatformInterface {
   Stream<dynamic> get findingTag {
     throw UnimplementedError('disconnect() has not been implemented.');
   }
+
+  /// Returns a stream of read tags.
+  Stream<dynamic> get readTags {
+    throw UnimplementedError('disconnect() has not been implemented.');
+  }
 }

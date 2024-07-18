@@ -3,25 +3,24 @@ package com.borda.zebra_rfid_reader_sdk
 import android.util.Log
 import com.borda.zebra_rfid_reader_sdk.utils.*
 import com.zebra.rfid.api3.*
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 /**
  * Handles RFID events such as tag reads, status changes, and disconnections.
  *
  * @property reader The RFID reader instance.
- * @property emit The function used to emit RFID event data.
+ * @property tagHandlerEvent The event handler for tag data events.
+ * @property tagFindHandler The event handler for tag find events.
  */
-class RfidEventHandler(reader: RFIDReader, private var emit: (json: String) -> Unit) :
+class RfidEventHandler(
+    private var reader: RFIDReader,
+    private var tagHandlerEvent: TagDataEventHandler,
+    private var tagFindHandler: TagDataEventHandler,
+    private var readTagEvent: TagDataEventHandler,
+) :
     RfidEventsListener {
-    private var reader: RFIDReader
-
-    /**
-     * Initializes the RFID event handler with the provided RFID reader instance.
-     *
-     * @param reader The RFID reader instance.
-     */
-    init {
-        this.reader = reader
-    }
 
     /**
      * Handles RFID read events.
@@ -31,10 +30,16 @@ class RfidEventHandler(reader: RFIDReader, private var emit: (json: String) -> U
     override fun eventReadNotify(e: RfidReadEvents) {
         val myTags: Array<TagData> = reader.Actions.getReadTags(100)
         if (myTags != null) {
-            for (index in 0 until myTags.size) {
+            for (index in myTags.indices) {
                 if (myTags[index].isContainsLocationInfo) {
                     TagLocationingResponse.setDistancePercent(myTags[index].LocationInfo.relativeDistance.toInt())
-                    emit(TagLocationingResponse.toJson())
+                    tagFindHandler.sendEvent(TagLocationingResponse.toJson())
+                }else{
+                    val tagData = TagDataResponse(
+                        myTags[index].tagID,
+                        Date(System.currentTimeMillis()).toString()
+                    )
+                    readTagEvent.sendEvent(tagData.toJson())
                 }
             }
         }
@@ -55,7 +60,7 @@ class RfidEventHandler(reader: RFIDReader, private var emit: (json: String) -> U
 
             ReaderResponse.setConnectionStatus(ConnectionStatus.connected)
             ReaderResponse.setBatteryLevel(batteryData.level.toString())
-            emit(ReaderResponse.toJson())
+            tagHandlerEvent.sendEvent(ReaderResponse.toJson())
 
         }
 
@@ -66,9 +71,8 @@ class RfidEventHandler(reader: RFIDReader, private var emit: (json: String) -> U
 
             ReaderResponse.reset()
             TagLocationingResponse.reset()
-
-            emit(ReaderResponse.toJson())
-            emit(TagLocationingResponse.toJson())
+            tagHandlerEvent.sendEvent(ReaderResponse.toJson())
+            tagFindHandler.sendEvent(TagLocationingResponse.toJson())
 
         }
 
@@ -98,6 +102,8 @@ class RfidEventHandler(reader: RFIDReader, private var emit: (json: String) -> U
 
             if (triggerMode == TriggerMode.INVENTORY_PERFORM) {
                 reader.Actions.Inventory.perform()
+                Thread.sleep(500);
+
 
             } else if (triggerMode == TriggerMode.TAG_LOCATIONING_PERFORM) {
                 val tagLocationing = TagLocationingResponse.getTag()

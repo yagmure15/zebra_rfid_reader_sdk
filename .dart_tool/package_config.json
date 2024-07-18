@@ -39,51 +39,69 @@
     },
     {
       "name": "flutter",
-      "rootUri": "file:///Users/engin/Documents/flutter/packages/flutter",
+      "rootUri": "file:///Users/engin/fvm/versions/3.22.2/packages/flutter",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
+      "name": "flutter_lints",
+      "rootUri": "file:///Users/engin/.pub-cache/hosted/pub.dev/flutter_lints-4.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.1"
+    },
+    {
+      "name": "flutter_test",
+      "rootUri": "file:///Users/engin/fvm/versions/3.22.2/packages/flutter_test",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
+      "name": "leak_tracker",
+      "rootUri": "file:///Users/engin/.pub-cache/hosted/pub.dev/leak_tracker-10.0.4",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
     {
-      "name": "flutter_lints",
-      "rootUri": "file:///Users/engin/.pub-cache/hosted/pub.dev/flutter_lints-2.0.3",
+      "name": "leak_tracker_flutter_testing",
+      "rootUri": "file:///Users/engin/.pub-cache/hosted/pub.dev/leak_tracker_flutter_testing-3.0.3",
       "packageUri": "lib/",
-      "languageVersion": "2.19"
+      "languageVersion": "3.2"
     },
     {
-      "name": "flutter_test",
-      "rootUri": "file:///Users/engin/Documents/flutter/packages/flutter_test",
+      "name": "leak_tracker_testing",
+      "rootUri": "file:///Users/engin/.pub-cache/hosted/pub.dev/leak_tracker_testing-3.0.1",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
     {
       "name": "lints",
-      "rootUri": "file:///Users/engin/.pub-cache/hosted/pub.dev/lints-2.1.1",
+      "rootUri": "file:///Users/engin/.pub-cache/hosted/pub.dev/lints-4.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.1"
+    },
+    {
+      "name": "matcher",
+      "rootUri": "file:///Users/engin/.pub-cache/hosted/pub.dev/matcher-0.12.16+1",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
     {
-      "name": "matcher",
-      "rootUri": "file:///Users/engin/.pub-cache/hosted/pub.dev/matcher-0.12.16",
-      "packageUri": "lib/",
-      "languageVersion": "2.18"
-    },
-    {
       "name": "material_color_utilities",
-      "rootUri": "file:///Users/engin/.pub-cache/hosted/pub.dev/material_color_utilities-0.5.0",
+      "rootUri": "file:///Users/engin/.pub-cache/hosted/pub.dev/material_color_utilities-0.8.0",
       "packageUri": "lib/",
       "languageVersion": "2.17"
     },
     {
       "name": "meta",
-      "rootUri": "file:///Users/engin/.pub-cache/hosted/pub.dev/meta-1.10.0",
+      "rootUri": "file:///Users/engin/.pub-cache/hosted/pub.dev/meta-1.12.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
     {
       "name": "path",
-      "rootUri": "file:///Users/engin/.pub-cache/hosted/pub.dev/path-1.8.3",
+      "rootUri": "file:///Users/engin/.pub-cache/hosted/pub.dev/path-1.9.0",
       "packageUri": "lib/",
-      "languageVersion": "2.12"
+      "languageVersion": "3.0"
     },
     {
       "name": "plugin_platform_interface",
@@ -93,7 +111,7 @@
     },
     {
       "name": "sky_engine",
-      "rootUri": "file:///Users/engin/Documents/flutter/bin/cache/pkg/sky_engine",
+      "rootUri": "file:///Users/engin/fvm/versions/3.22.2/bin/cache/pkg/sky_engine",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
@@ -129,7 +147,7 @@
     },
     {
       "name": "test_api",
-      "rootUri": "file:///Users/engin/.pub-cache/hosted/pub.dev/test_api-0.6.1",
+      "rootUri": "file:///Users/engin/.pub-cache/hosted/pub.dev/test_api-0.7.0",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
@@ -140,10 +158,10 @@
       "languageVersion": "2.14"
     },
     {
-      "name": "web",
-      "rootUri": "file:///Users/engin/.pub-cache/hosted/pub.dev/web-0.3.0",
+      "name": "vm_service",
+      "rootUri": "file:///Users/engin/.pub-cache/hosted/pub.dev/vm_service-14.2.1",
       "packageUri": "lib/",
-      "languageVersion": "3.2"
+      "languageVersion": "3.3"
     },
     {
       "name": "zebra_rfid_reader_sdk",
@@ -152,7 +170,10 @@
       "languageVersion": "2.19"
     }
   ],
-  "generated": "2024-04-29T15:36:30.096312Z",
+  "generated": "2024-06-11T07:49:57.349830Z",
   "generator": "pub",
-  "generatorVersion": "3.2.3"
+  "generatorVersion": "3.4.3",
+  "flutterRoot": "file:///Users/engin/fvm/versions/3.22.2",
+  "flutterVersion": "3.22.2",
+  "pubCache": "file:///Users/engin/.pub-cache"
 }

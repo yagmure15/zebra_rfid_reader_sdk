@@ -8,7 +8,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:zebra_rfid_reader_sdk/zebra_rfid_reader_sdk.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const MaterialApp(home: MyApp()));
 }
 
 class MyApp extends StatefulWidget {
@@ -21,6 +21,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final _zebraRfidReaderSdkPlugin = ZebraRfidReaderSdk();
   List<ReaderDevice> availableReaderList = [];
+  List<TagDataModel> readTags = [];
   ReaderDevice connectedReader = ReaderDevice.initial();
   double antennaPower = 270;
   double beeperVolume = 3;
@@ -30,6 +31,18 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     listenToEvent();
+    listenToReadTags();
+  }
+
+  void listenToReadTags() {
+    _zebraRfidReaderSdkPlugin.readTags.listen((event) {
+      final result = jsonDecode(event.toString());
+      final readTag = TagDataModel.fromJson(result);
+      readTags.removeWhere((element) => element.tagId == readTag.tagId);
+      setState(() {
+        readTags.insert(0, readTag);
+      });
+    });
   }
 
   void listenToEvent() {
@@ -90,6 +103,14 @@ class _MyAppState extends State<MyApp> {
     await _zebraRfidReaderSdkPlugin.setDynamicPower(value);
   }
 
+  Future<void> findTheTag(String tag) async {
+    await _zebraRfidReaderSdkPlugin.findTheTag(tag);
+  }
+
+  Future<void> stopFindingTheTag() async {
+    await _zebraRfidReaderSdkPlugin.stopFindingTheTag();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -105,41 +126,30 @@ class _MyAppState extends State<MyApp> {
               const Text('DEVICES'),
               Text(
                 'Handheld Readers (${availableReaderList.length})',
-                style:
-                    const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               Expanded(
                 child: ListView.builder(
                   itemBuilder: (context, index) => Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4),
                     child: ListTile(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                       selectedTileColor: Colors.orange[100],
                       tileColor: Colors.black12,
-                      onTap: () => connectedReader.connectionStatus ==
-                              ConnectionStatus.connecting
+                      onTap: () => connectedReader.connectionStatus == ConnectionStatus.connecting
                           ? null
-                          : connectedReader.name ==
-                                      availableReaderList[index].name &&
-                                  connectedReader.connectionStatus ==
-                                      ConnectionStatus.connected
+                          : connectedReader.name == availableReaderList[index].name &&
+                                  connectedReader.connectionStatus == ConnectionStatus.connected
                               ? disconnectToZebra()
-                              : connectToZebra(
-                                  availableReaderList[index].name!),
+                              : connectToZebra(availableReaderList[index].name!),
                       contentPadding: const EdgeInsets.all(8),
                       selectedColor: Colors.amber,
-                      title: Text(
-                          availableReaderList[index].name ?? "Unknown Device"),
-                      subtitle: connectedReader.name ==
-                                  availableReaderList.elementAt(index).name &&
-                              connectedReader.connectionStatus ==
-                                  ConnectionStatus.connected
-                          ? Text(
-                              'Battery ${connectedReader.batteryLevel ?? '0'}%')
+                      title: Text(availableReaderList[index].name ?? "Unknown Device"),
+                      subtitle: connectedReader.name == availableReaderList.elementAt(index).name &&
+                              connectedReader.connectionStatus == ConnectionStatus.connected
+                          ? Text('Battery ${connectedReader.batteryLevel ?? '0'}%')
                           : null,
-                      trailing: Text(connectedReader.name ==
-                              availableReaderList.elementAt(index).name
+                      trailing: Text(connectedReader.name == availableReaderList.elementAt(index).name
                           ? connectedReader.connectionStatus.name
                           : 'Not Connected'),
                     ),
@@ -158,8 +168,7 @@ class _MyAppState extends State<MyApp> {
                 },
               ),
               const SizedBox(height: 16),
-              Text(
-                  'Beeper Volume: ${BeeperVolume.values[beeperVolume.toInt()].name.toUpperCase()}'),
+              Text('Beeper Volume: ${BeeperVolume.values[beeperVolume.toInt()].name.toUpperCase()}'),
               SizedBox(
                 width: double.infinity,
                 child: CupertinoSlider(
@@ -190,6 +199,12 @@ class _MyAppState extends State<MyApp> {
                       antennaPower = value;
                     });
                   },
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: readTags.length,
+                  itemBuilder: (context, index) => Text(readTags[index].tagId),
                 ),
               ),
               SizedBox(

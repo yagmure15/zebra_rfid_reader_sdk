@@ -4,11 +4,13 @@ class ReaderDevice {
   final ConnectionStatus connectionStatus;
   final String? name;
   final String? batteryLevel;
+  final List<dynamic>?  antennaRange;
 
   ReaderDevice({
     required this.connectionStatus,
     this.name,
     this.batteryLevel,
+    this.antennaRange,
   });
 
   factory ReaderDevice.fromJson(Map<Object?, Object?> json) {
@@ -20,6 +22,7 @@ class ReaderDevice {
           orElse: () => ConnectionStatus.notConnected),
       name: json['name'] as String?,
       batteryLevel: json['batteryLevel'] as String?,
+      antennaRange: json['antennaRange'] as List<dynamic>?,
     );
   }
 
@@ -28,6 +31,7 @@ class ReaderDevice {
       'name': name,
       'connectionStatus': connectionStatus.name,
       'batteryLevel': batteryLevel,
+      'antennaRange': antennaRange,
     };
   }
 
@@ -36,6 +40,7 @@ class ReaderDevice {
       connectionStatus: ConnectionStatus.notConnected,
       name: '',
       batteryLevel: '',
+      antennaRange: [120,300],
     );
   }
 }
