@@ -25,3 +25,13 @@ flutter:
         pluginClass: ZebraRfidReaderSdkPlugin
       ios:
         pluginClass: ZebraRfidReaderSdkPlugin
+
+scripts:
+  clean: |
+    fvm flutter clean
+    fvm flutter pub get
+    cd example
+    fvm flutter clean
+    fvm flutter pub get
+    cd ios
+    pod install
