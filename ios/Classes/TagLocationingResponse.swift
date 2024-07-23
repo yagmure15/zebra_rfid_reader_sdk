@@ -32,17 +32,11 @@ class TagLocationingResponse {
     }
     
     func toJson() -> String? {
-        let locationInfo = LocationInfo(tag: tag, distancePercent: distancePercent, isAnyReaderConnected: isAnyReaderConnected)
+        let locationInfo = LocationInfo(tag: tag, distanceAsPercentage: distancePercent, isAnyReaderConnected: isAnyReaderConnected)
         let jsonEncoder = JSONEncoder()
         if let jsonData = try? jsonEncoder.encode(locationInfo) {
             return String(data: jsonData, encoding: .utf8)
         }
         return nil
     }
-}
-
-struct LocationInfo: Codable {
-    var tag: String
-    var distancePercent: Int?
-    var isAnyReaderConnected: Bool
 }

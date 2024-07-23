@@ -214,6 +214,13 @@ class _MyAppState extends State<MyApp> {
                   child: const Text('Get Available ReaderDevice List'),
                 ),
               ),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () => findTheTag('BDBD0134000000000013B747'),
+                  child: const Text('Find The Tag'),
+                ),
+              ),
             ],
           ),
         ),
