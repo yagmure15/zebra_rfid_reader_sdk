@@ -55,11 +55,34 @@ defaultConfig {
 }    
 ```
 ## IOS Setup 🔧 
-Coming Soon
+### Be Sure min IOS Version 14.0 or Higher
+
+Don't forget to change this line in the Podfile.
+```dart
+platform :ios, '14.0'
+```
+### Info.plist Setup
+The following lines should be added to the project that will use the library.
+
+```xml
+<key>NSBluetoothAlwaysUsageDescription</key>
+<string>This app needs bluetooth permission to listen tag events</string>
+<key>UISupportedExternalAccessoryProtocols</key>
+<array>
+   <string>com.zebra.rfd8X00_easytext</string>
+   <string>com.zebra.scanner.SSI</string>
+</array>
+```
+
+
+------------------------------------------------------------------------------------------------
+
 
 ## Features
 - Ability to connect to paired Zebra RFID reader.
 - Ability to configure antenna power, beeper volume, and dynamic power.
+- Seach and find spesific tag
+- Read tags
 
 ## Usage
 
@@ -105,7 +128,6 @@ It returns a list of paired devices, resulting in a list of **ReaderDevice**.
 _zebraRfidReaderSdkPlugin.getAvailableReaderList();
 ```
 
-
 ### Anntenna Power
 This function is used to set the antenna power value for the Zebra RFID reader. The value parameter should be an integer between 120 and 300, indicating the desired power level.
 ```dart
@@ -132,6 +154,11 @@ _zebraRfidReaderSdkPlugin.connectedReaderDevice.listen((event) {
     });
 ```
 
+### Tag Locationing
+You can search for any tag with a specific pattern.
+```dart
+ _zebraRfidReaderSdkPlugin.findTheTag('add_your_tag_pattern')
+```
 
 
 
