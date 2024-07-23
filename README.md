@@ -7,7 +7,7 @@ Zebra RFID Reader SDK plugin for Flutter.
 ## ❗NOTES
 For now, use the `dev_10` branch when adding the library! 👀
 
-pubspec.yaml should look like this:
+`pubspec.yaml` should look like this:
 
 ```dart
   zebra_rfid_reader_sdk:
