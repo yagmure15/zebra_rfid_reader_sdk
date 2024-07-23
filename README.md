@@ -4,6 +4,22 @@ Zebra RFID Reader SDK plugin for Flutter.
 
 <img src="https://github.com/yagmure15/zebra_rfid_reader_sdk/raw/main/site/zebra_rfd8500.png" alt="Zebra RFID Reader SDK Logo" width="300">
 
+## ❗NOTES
+For now, use the `dev_10` branch when adding the library! 👀
+
+The pubspec.yaml should look like this:
+
+```dart
+  zebra_rfid_reader_sdk:
+    git:
+      url: https://github.com/yagmure15/zebra_rfid_reader_sdk.git
+      ref: dev_10
+```
+
+
+
+
+
 ## Android Setup 🔧 
 
 ### Add RFIDAPI3Library Folder
