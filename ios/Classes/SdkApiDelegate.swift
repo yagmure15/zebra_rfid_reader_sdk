@@ -89,6 +89,8 @@ class SdkApiDelegate: NSObject, srfidISdkApiDelegate {
     
     func srfidEventProximityNotify(_ readerID: Int32, aProximityPercent proximityPercent: Int32) {
         print("srfidEventProximityNotify")
+        TagLocationingResponse.shared.setDistancePercent(distancePercent: Int(proximityPercent))
+        self.tagFindingEvent.sendEvent(json: TagLocationingResponse.shared.toJson()!)
     }
     
     func srfidEventTriggerNotify(_ readerID: Int32, aTriggerEvent triggerEvent: SRFID_TRIGGEREVENT) {
