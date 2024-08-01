@@ -69,7 +69,7 @@ class RfidEventHandler(
             Log.d(LOG_TAG, "DISCONNECTION_EVENT")
             reader.disconnect()
 
-            ReaderResponse.reset()
+            ReaderResponse.disconnected()
             TagLocationingResponse.reset()
             tagHandlerEvent.sendEvent(ReaderResponse.toJson())
             tagFindHandler.sendEvent(TagLocationingResponse.toJson())

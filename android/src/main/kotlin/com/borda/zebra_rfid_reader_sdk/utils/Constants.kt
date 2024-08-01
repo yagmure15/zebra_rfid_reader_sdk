@@ -4,7 +4,7 @@ const val LOG_TAG = "ZEBRA_RFID_READER_SDK"
 
 
 enum class ConnectionStatus {
-    notConnected, connecting, connected, failed
+    notConnected, disconnected, connecting, connected, failed
 }
 
 enum class TriggerMode {

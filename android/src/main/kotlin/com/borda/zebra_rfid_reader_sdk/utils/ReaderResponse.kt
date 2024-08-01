@@ -54,6 +54,14 @@ object ReaderResponse {
     }
 
     /**
+     * Sets the connection status to "disconnected".
+     */
+    fun disconnected() {
+        this.batteryLevel = null
+        this.connectionStatus = ConnectionStatus.disconnected
+    }
+
+    /**
      * Sets the connection status to "failed".
      */
     fun setAsConnectionError() {
