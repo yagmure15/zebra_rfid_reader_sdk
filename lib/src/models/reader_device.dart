@@ -1,4 +1,4 @@
-enum ConnectionStatus { connected, connecting, notConnected, failed }
+enum ConnectionStatus { connected, disconnected, connecting, notConnected, failed }
 
 class ReaderDevice {
   final ConnectionStatus connectionStatus;
